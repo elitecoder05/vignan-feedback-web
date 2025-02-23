@@ -1,21 +1,17 @@
-// App.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function App() {
-  // State variables to store dropdown selections
   const [year, setYear] = useState('1');
   const [branch, setBranch] = useState('');
   const [semester, setSemester] = useState('');
   const navigate = useNavigate();
 
-  // Handler for the submit button
   const handleSubmit = () => {
     console.log('Year:', year);
     console.log('Branch:', branch);
     console.log('Semester:', semester);
 
-    // Build the API URL dynamically using user selections
     const url = `https://academic-rating.onrender.com/api/subjects?branch=${branch}&semester=${semester}&year=${year}`;
 
     const myHeaders = new Headers();
@@ -26,15 +22,12 @@ function App() {
     const requestOptions = {
       method: "GET",
       headers: myHeaders,
-      // Note: GET requests do not require a body, so we omit it.
       redirect: "follow"
     };
 
-    // Fetch the API data, parse it, and navigate to Main.js
     fetch(url, requestOptions)
       .then(response => response.json())
       .then(data => {
-        // Ensure that the fetched data is an array
         let subjects = [];
         if (Array.isArray(data)) {
           subjects = data;
@@ -59,22 +52,26 @@ function App() {
         }
         html, body, #root {
           height: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background-color: #f4f4f4;
         }
-        /* Force a mobile-like container width */
         .app {
           width: 375px;
-          margin: 0 auto;
           background-color: #fff;
           font-family: Arial, sans-serif;
-          padding: 0 20px;
+          padding: 20px;
+          border: 2px solid #007bff;
+          border-radius: 10px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+          text-align: center;
         }
-        /* Header image styling */
         header img {
           width: 100%;
           height: auto;
           display: block;
         }
-        /* "HEY THERE!!" button */
         .top-button {
           width: 100%;
           margin: 20px 0;
@@ -88,7 +85,6 @@ function App() {
           font-weight: bold;
           cursor: pointer;
         }
-        /* Feedback title and dashed line */
         .feedback-title {
           font-size: 20px;
           font-weight: bold;
@@ -99,7 +95,6 @@ function App() {
           border-top: 1px dashed #000;
           margin-bottom: 20px;
         }
-        /* Labels and selects */
         label {
           display: block;
           margin-bottom: 5px;
@@ -114,7 +109,6 @@ function App() {
           border: 1px solid #ccc;
           outline: none;
         }
-        /* Submit button and interactive styling */
         .submit-button {
           width: 100%;
           background-color: #007bff;
@@ -127,14 +121,12 @@ function App() {
           cursor: pointer;
           transition: transform 0.1s ease-in-out, background-color 0.1s ease-in-out;
         }
-        /* Scale down and change background color on click */
         .submit-button:active {
           transform: scale(0.95);
           background-color: #0056b3;
         }
       `}</style>
 
-      {/* Header with the provided VIGNAN banner */}
       <header>
         <img
           src="https://webprosindia.com/vignanit/collegeimages/title_head.jpg"
@@ -142,7 +134,6 @@ function App() {
         />
       </header>
 
-      {/* Main content */}
       <main>
         <button className="top-button">HEY THERE!!</button>
 
