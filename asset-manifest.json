@@ -1,8 +1,8 @@
 {
   "files": {
-    "main.js": "/your-repo-name/static/js/main.10f11426.js",
-    "index.html": "/your-repo-name/index.html",
-    "main.10f11426.js.map": "/your-repo-name/static/js/main.10f11426.js.map"
+    "main.js": "/vignan-feedback-web/static/js/main.10f11426.js",
+    "index.html": "/vignan-feedback-web/index.html",
+    "main.10f11426.js.map": "/vignan-feedback-web/static/js/main.10f11426.js.map"
   },
   "entrypoints": [
     "static/js/main.10f11426.js"
