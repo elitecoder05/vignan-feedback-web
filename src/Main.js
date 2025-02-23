@@ -74,8 +74,7 @@ function Main() {
         }
 
         .main {
-          width: 90%;
-          max-width: 400px;
+          max-width: 360px;
           margin: 20px auto;
           padding: 15px;
           background: white;
@@ -130,7 +129,7 @@ function Main() {
           transform: scale(1);
         }
 
-        /* Suggestion Box */
+        /* Suggestion Box - Now perfectly inside the feedback box */
         .suggestion-box {
           width: 100%;
           padding: 8px;
@@ -178,40 +177,21 @@ function Main() {
           cursor: not-allowed;
         }
 
-        /* Fully Responsive Design */
-        @media (max-width: 768px) {
+        /* Responsive Design */
+        @media (max-width: 400px) {
           .main {
-            width: 95%;
-            max-width: 360px;
-          }
-        }
-
-        @media (max-width: 480px) {
-          .main {
-            width: 100%;
-            max-width: 340px;
+            max-width: 320px;
             padding: 10px;
           }
 
           .radio-group {
             flex-direction: column;
-            align-items: flex-start;
           }
 
           .radio-group label {
             font-size: 14px;
           }
-
-          .suggestion-box {
-            font-size: 13px;
-          }
-
-          .submit-button {
-            font-size: 13px;
-            padding: 10px;
-          }
         }
-
       `}</style>
 
       {/* Header image */}
