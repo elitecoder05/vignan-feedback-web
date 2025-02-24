@@ -108,6 +108,8 @@ function Home() {
           <option value="">Select Branch</option>
           <option value="CSE1">CSE1</option>
           <option value="CSE2">CSE2</option>
+          <option value="CSE3">CSE3</option>
+          <option value="CSE4">CSE4</option>
         </select>
 
         <label>Select Semester</label>
