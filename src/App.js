@@ -1,4 +1,3 @@
-// App.js
 import React, { useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import Main from './Main';
@@ -7,15 +6,18 @@ function Home() {
   const [year, setYear] = useState('');
   const [branch, setBranch] = useState('');
   const [semester, setSemester] = useState('');
+  const [isLoading, setIsLoading] = useState(false); // New loading state
   const navigate = useNavigate();
 
   const handleSubmit = () => {
     console.log('Year:', year);
     console.log('Branch:', branch);
     console.log('Semester:', semester);
-  
+
     const url = `https://academic-rating.onrender.com/api/subjects?branch=${branch}&semester=${semester}&year=${year}`;
-  
+    
+    setIsLoading(true); // Start loader
+    
     fetch(url, {
       method: "GET",
       headers: {
@@ -28,16 +30,19 @@ function Home() {
         // Check if the response indicates the server is under maintenance.
         if (data.message === "Server is under maintenance.") {
           alert('The site admin has not made the page available, please try again later');
+          setIsLoading(false);
           return;
         }
         let subjects = Array.isArray(data) ? data : data.subjects || [];
         console.log('Fetched Data:', subjects);
+        setIsLoading(false);
         navigate('/main', { state: { subjects } });
       })
-      .catch(error => console.error('Error fetching data:', error));
+      .catch(error => {
+        console.error('Error fetching data:', error);
+        setIsLoading(false);
+      });
   };
-  
-  
 
   return (
     <div className="app">
@@ -59,7 +64,7 @@ function Home() {
           background-color: #fff;
           font-family: Arial, sans-serif;
           padding: 20px;
-          border: 3px solid #007bff; /* Blue border added */
+          border: 3px solid #007bff;
           border-radius: 10px;
           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
           text-align: center;
@@ -70,7 +75,7 @@ function Home() {
           display: block;
         }
         .feedback-title {
-        padding-top: 15px;
+          padding-top: 15px;
           font-size: 20px;
           font-weight: bold;
           margin-bottom: 10px;
@@ -94,6 +99,10 @@ function Home() {
           font-weight: bold;
           cursor: pointer;
         }
+        .submit-button:disabled {
+          background-color: #aaa;
+          cursor: not-allowed;
+        }
       `}</style>
 
       <header>
@@ -105,8 +114,7 @@ function Home() {
 
         <label>Select Year</label>
         <select value={year} onChange={(e) => setYear(e.target.value)}>
-        <option value="">Select Year</option>
-
+          <option value="">Select Year</option>
           <option value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
@@ -129,7 +137,9 @@ function Home() {
           <option value="2">2</option>
         </select>
 
-        <button className="submit-button" onClick={handleSubmit}>SUBMIT</button>
+        <button className="submit-button" onClick={handleSubmit} disabled={isLoading}>
+          {isLoading ? "Loading..." : "SUBMIT"}
+        </button>
       </main>
     </div>
   );
