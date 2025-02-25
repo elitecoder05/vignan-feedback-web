@@ -13,9 +13,9 @@ function Home() {
     console.log('Year:', year);
     console.log('Branch:', branch);
     console.log('Semester:', semester);
-
+  
     const url = `https://academic-rating.onrender.com/api/subjects?branch=${branch}&semester=${semester}&year=${year}`;
-
+  
     fetch(url, {
       method: "GET",
       headers: {
@@ -25,12 +25,19 @@ function Home() {
     })
       .then(response => response.json())
       .then(data => {
+        // Check if the response indicates the server is under maintenance.
+        if (data.message === "Server is under maintenance.") {
+          alert('The site admin has not made the page available, please try again later');
+          return;
+        }
         let subjects = Array.isArray(data) ? data : data.subjects || [];
         console.log('Fetched Data:', subjects);
         navigate('/main', { state: { subjects } });
       })
       .catch(error => console.error('Error fetching data:', error));
   };
+  
+  
 
   return (
     <div className="app">
