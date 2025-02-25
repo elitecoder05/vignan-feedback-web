@@ -4,7 +4,7 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import Main from './Main';
 
 function Home() {
-  const [year, setYear] = useState('1');
+  const [year, setYear] = useState('');
   const [branch, setBranch] = useState('');
   const [semester, setSemester] = useState('');
   const navigate = useNavigate();
@@ -63,6 +63,7 @@ function Home() {
           display: block;
         }
         .feedback-title {
+        padding-top: 15px;
           font-size: 20px;
           font-weight: bold;
           margin-bottom: 10px;
@@ -97,6 +98,8 @@ function Home() {
 
         <label>Select Year</label>
         <select value={year} onChange={(e) => setYear(e.target.value)}>
+        <option value="">Select Year</option>
+
           <option value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
