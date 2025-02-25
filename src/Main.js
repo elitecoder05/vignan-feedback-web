@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 function Main() {
@@ -7,6 +7,23 @@ function Main() {
 
   const [feedback, setFeedback] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+
+  // On mount, check if feedback was submitted within the last 48 hours
+  useEffect(() => {
+    const storedSubmissionTime = localStorage.getItem("feedbackSubmissionTime");
+    if (storedSubmissionTime) {
+      const submissionTime = new Date(parseInt(storedSubmissionTime, 10));
+      const now = new Date();
+      // Check if less than 48 hours (in ms) have passed
+      if (now - submissionTime < 48 * 60 * 60 * 1000) {
+        setHasSubmitted(true);
+      } else {
+        // Remove expired submission time if older than 48 hours
+        localStorage.removeItem("feedbackSubmissionTime");
+      }
+    }
+  }, []);
 
   const onRatingChange = (subjectId, value) => {
     setFeedback(prev => ({
@@ -51,6 +68,9 @@ function Main() {
 
       if (response.ok) {
         alert("Feedback submitted successfully");
+        // Save the submission timestamp in localStorage
+        localStorage.setItem("feedbackSubmissionTime", Date.now().toString());
+        setHasSubmitted(true);
       } else {
         alert("The admin has not made the site available. Please contact your admin.");
       }
@@ -129,7 +149,7 @@ function Main() {
           transform: scale(1);
         }
 
-        /* Suggestion Box - Now perfectly inside the feedback box */
+        /* Suggestion Box */
         .suggestion-box {
           width: 100%;
           padding: 8px;
@@ -194,7 +214,6 @@ function Main() {
         }
       `}</style>
 
-      {/* Header image */}
       <header>
         <img
           src="https://webprosindia.com/vignanit/collegeimages/title_head.jpg"
@@ -215,6 +234,7 @@ function Main() {
                   value={value}
                   checked={feedback[subject._id]?.rating === String(value)}
                   onChange={(e) => onRatingChange(subject._id, e.target.value)}
+                  disabled={hasSubmitted}
                 />
                 {["Excellent", "Good", "Average", "Poor"][4 - value]}
               </label>
@@ -225,11 +245,20 @@ function Main() {
             placeholder="Enter your suggestions..."
             value={feedback[subject._id]?.suggestion || ''}
             onChange={(e) => onSuggestionChange(subject._id, e.target.value)}
+            disabled={hasSubmitted}
           />
         </div>
       ))}
-      <button className="submit-button" onClick={onSubmitFeedback} disabled={isSubmitting}>
-        {isSubmitting ? "Submitting..." : "Submit Feedback"}
+      <button
+        className="submit-button"
+        onClick={onSubmitFeedback}
+        disabled={isSubmitting || hasSubmitted}
+      >
+        {isSubmitting
+          ? "Submitting..."
+          : hasSubmitted
+          ? "Feedback already submitted"
+          : "Submit Feedback"}
       </button>
     </div>
   );
