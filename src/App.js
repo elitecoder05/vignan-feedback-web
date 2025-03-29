@@ -6,7 +6,6 @@ function Home() {
   const [year, setYear] = useState('');
   const [branch, setBranch] = useState('');
   const [semester, setSemester] = useState('');
-  const [isLoading, setIsLoading] = useState(false); // New loading state
   const navigate = useNavigate();
 
   const handleSubmit = () => {
@@ -14,34 +13,8 @@ function Home() {
     console.log('Branch:', branch);
     console.log('Semester:', semester);
 
-    const url = `https://academic-rating.onrender.com/api/subjects?branch=${branch}&semester=${semester}&year=${year}`;
-    
-    setIsLoading(true); // Start loader
-    
-    fetch(url, {
-      method: "GET",
-      headers: {
-        "Accept": "*/*",
-        "Content-Type": "application/json"
-      }
-    })
-      .then(response => response.json())
-      .then(data => {
-        // Check if the response indicates the server is under maintenance.
-        if (data.message === "Server is under maintenance.") {
-          alert('The site admin has not made the page available, please try again later');
-          setIsLoading(false);
-          return;
-        }
-        let subjects = Array.isArray(data) ? data : data.subjects || [];
-        console.log('Fetched Data:', subjects);
-        setIsLoading(false);
-        navigate('/main', { state: { subjects } });
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-        setIsLoading(false);
-      });
+    // Navigate to the Main screen with selected values
+    navigate('/main', { state: { year, branch, semester } });
   };
 
   return (
@@ -137,8 +110,8 @@ function Home() {
           <option value="2">2</option>
         </select>
 
-        <button className="submit-button" onClick={handleSubmit} disabled={isLoading}>
-          {isLoading ? "Loading..." : "SUBMIT"}
+        <button className="submit-button" onClick={handleSubmit}>
+          SUBMIT
         </button>
       </main>
     </div>

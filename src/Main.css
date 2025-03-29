@@ -1,0 +1,148 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: "Poppins", sans-serif;
+    background: #f8f9fc;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .main {
+    width: 375px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 90vh;
+    overflow: hidden;
+  }
+  
+  header img {
+    width: 100%;
+    border-radius: 6px;
+  }
+  
+  h2 {
+    font-size: 18px;
+    margin: 10px 0;
+    font-weight: 600;
+    text-align: center;
+  }
+  
+  .add-section {
+    position: sticky;
+    top: 0;
+    background: white;
+    padding-bottom: 10px;
+    z-index: 10;
+  }
+  
+  .add-subject {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .add-subject input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+  
+  .add-subject button {
+    padding: 8px 12px;
+    border: none;
+    background: #007bff;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .add-subject button:hover {
+    background: #0056b3;
+  }
+  
+  .subject-list {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-right: 5px;
+  }
+  
+  .feedback-box {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 10px;
+    box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.08);
+    text-align: left;
+  }
+  
+  .subject-name {
+    font-size: 16px;
+    font-weight: 600;
+  }
+  
+  .radio-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  
+  .radio-group label {
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .radio-group input {
+    margin-right: 5px;
+    transform: scale(1.2);
+  }
+  
+  .suggestion-box {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    resize: vertical;
+    min-height: 50px;
+    background: #fafafa;
+    outline: none;
+    margin-top: 10px;
+  }
+  
+  .submit-button {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .submit-button:hover {
+    background: linear-gradient(135deg, #0056b3, #003f88);
+  }
+  
+  .submit-button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+  
