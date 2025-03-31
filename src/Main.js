@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import './Main.css';
+
 function Main() {
   const location = useLocation();
   const { year, branch, semester } = location.state || {
@@ -14,6 +15,8 @@ function Main() {
   const [feedback, setFeedback] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
 
   useEffect(() => {
     const storedSubmissionTime = localStorage.getItem("feedbackSubmissionTime");
@@ -48,6 +51,14 @@ function Main() {
     }));
   };
 
+  const displayAlert = (message, isSuccess = true) => {
+    setAlertMessage(message);
+    setShowAlert(true);
+    setTimeout(() => {
+      setShowAlert(false);
+    }, 3000);
+  };
+
   const onSubmitFeedback = () => {
     setIsSubmitting(true);
 
@@ -62,20 +73,53 @@ function Main() {
 
     const data = {
       branch,
-      year,
-      semester,
+      year: Number(year),
+      semester: Number(semester),
       ratings,
     };
 
-    console.log(`Feedback submitted successfully!\n\nJSON sent:\n${JSON.stringify(data, null, 2)}`);
+    const myHeaders = new Headers();
+    myHeaders.append("Accept", "*/*");
+    myHeaders.append("User-Agent", "Thunder Client (https://www.thunderclient.com)");
+    myHeaders.append("Content-Type", "application/json");
 
-    localStorage.setItem("feedbackSubmissionTime", Date.now().toString());
-    setHasSubmitted(true);
-    setIsSubmitting(false);
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: JSON.stringify(data),
+      redirect: "follow"
+    };
+
+    fetch("https://academic-rating.onrender.com/api/feedback/rating", requestOptions)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.text();
+      })
+      .then((result) => {
+        console.log("API Response:", result);
+        displayAlert("Feedback submitted successfully!");
+        localStorage.setItem("feedbackSubmissionTime", Date.now().toString());
+        setHasSubmitted(true);
+      })
+      .catch((error) => {
+        console.error("Error submitting feedback:", error);
+        displayAlert("Error submitting feedback. Please try again.", false);
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
   };
 
   return (
     <div className="main">
+      {showAlert && (
+        <div className={`alert ${alertMessage.includes("Error") ? "alert-error" : "alert-success"}`}>
+          {alertMessage}
+        </div>
+      )}
+
       <header>
         <img src="https://webprosindia.com/vignanit/collegeimages/title_head.jpg" alt="Header" />
       </header>
