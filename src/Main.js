@@ -142,7 +142,7 @@ function Main() {
           <div key={subject.id} className="feedback-box">
             <div className="subject-name">{subject.name}</div>
             <div className="radio-group">
-              {[4, 3, 2, 1].map((value) => (
+              {[3, 2, 1].map((value) => (
                 <label key={value}>
                   <input
                     type="radio"
@@ -152,7 +152,7 @@ function Main() {
                     onChange={(e) => onRatingChange(subject.id, e.target.value)}
                     disabled={hasSubmitted}
                   />
-                  {["Excellent", "Good", "Average", "Poor"][4 - value]}
+                  {value === 3 ? "Excellent" : value === 2 ? "Satisfactory" : "Not upto the mark"}
                 </label>
               ))}
             </div>
