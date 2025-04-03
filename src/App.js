@@ -1,20 +1,24 @@
-import React, { useState } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
-import Main from './Main';
+import React, { useState } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import Main from "./Main";
 
 function Home() {
-  const [year, setYear] = useState('');
-  const [branch, setBranch] = useState('');
-  const [semester, setSemester] = useState('');
+  const [year, setYear] = useState("");
+  const [branch, setBranch] = useState("");
+  const [section, setSection] = useState("");
+  const [semester, setSemester] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = () => {
-    console.log('Year:', year);
-    console.log('Branch:', branch);
-    console.log('Semester:', semester);
+    // Combine branch and section for sending to the next page
+    const combinedBranch = branch + section;
+    
+    console.log("Year:", year);
+    console.log("Branch:", combinedBranch); // This will be like "CSE1"
+    console.log("Semester:", semester);
 
     // Navigate to the Main screen with selected values
-    navigate('/main', { state: { year, branch, semester } });
+    navigate("/main", { state: { year, branch: combinedBranch, semester } });
   };
 
   return (
@@ -53,10 +57,19 @@ function Home() {
           font-weight: bold;
           margin-bottom: 10px;
         }
+        .form-group {
+          margin-bottom: 15px;
+          text-align: left;
+        }
+        .form-group label {
+          display: block;
+          margin-bottom: 5px;
+          font-weight: bold;
+        }
         select {
           width: 100%;
           padding: 10px;
-          margin-bottom: 20px;
+          margin-bottom: 10px;
           font-size: 16px;
           border-radius: 5px;
           border: 1px solid #ccc;
@@ -79,38 +92,62 @@ function Home() {
       `}</style>
 
       <header>
-        <img src="https://webprosindia.com/vignanit/collegeimages/title_head.jpg" alt="VIGNAN Header" />
+        <img
+          src="https://webprosindia.com/vignanit/collegeimages/title_head.jpg"
+          alt="VIGNAN Header"
+        />
       </header>
 
       <main>
         <div className="feedback-title">FEEDBACK</div>
 
-        <label>Select Year</label>
-        <select value={year} onChange={(e) => setYear(e.target.value)}>
-          <option value="">Select Year</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-        </select>
+        <div className="form-group">
+          <label>Select Year</label>
+          <select value={year} onChange={(e) => setYear(e.target.value)}>
+            <option value="">Select Year</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+          </select>
+        </div>
 
-        <label>Select Branch</label>
-        <select value={branch} onChange={(e) => setBranch(e.target.value)}>
-          <option value="">Select Branch</option>
-          <option value="CSE1">CSE1</option>
-          <option value="CSE2">CSE2</option>
-          <option value="CSE3">CSE3</option>
-          <option value="CSE4">CSE4</option>
-        </select>
+        <div className="form-group">
+          <label>Select Branch</label>
+          <select value={branch} onChange={(e) => setBranch(e.target.value)}>
+            <option value="">Select Branch</option>
+            <option value="CSE">CSE</option>
+            <option value="ECE">ECE</option>
+            <option value="MECH">MECH</option>
+            <option value="CIVIL">CIVIL</option>
+          </select>
+        </div>
 
-        <label>Select Semester</label>
-        <select value={semester} onChange={(e) => setSemester(e.target.value)}>
-          <option value="">Select Semester</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-        </select>
+        <div className="form-group">
+          <label>Select Section</label>
+          <select value={section} onChange={(e) => setSection(e.target.value)}>
+            <option value="">Select Section</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+          </select>
+        </div>
 
-        <button className="submit-button" onClick={handleSubmit}>
+        <div className="form-group">
+          <label>Select Semester</label>
+          <select value={semester} onChange={(e) => setSemester(e.target.value)}>
+            <option value="">Select Semester</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+          </select>
+        </div>
+
+        <button 
+          className="submit-button" 
+          onClick={handleSubmit}
+          disabled={!year || !branch || !section || !semester}
+        >
           SUBMIT
         </button>
       </main>
