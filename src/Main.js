@@ -105,7 +105,7 @@ function Main() {
       })
       .catch((error) => {
         console.error("Error submitting feedback:", error);
-        displayAlert("Error submitting feedback. Please try again.", false);
+        displayAlert("The admin has not made the site available yet , Contact admin", false);
       })
       .finally(() => {
         setIsSubmitting(false);
