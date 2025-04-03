@@ -136,7 +136,7 @@ function Home() {
             <option value="7">7</option>
           </select>
         </div>
-
+        
         <div className="form-group">
           <label>Select Semester</label>
           <select value={semester} onChange={(e) => setSemester(e.target.value)}>
