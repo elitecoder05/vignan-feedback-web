@@ -11,12 +11,44 @@ function Main() {
   };
 
   const [subjects, setSubjects] = useState([]);
-  const [newSubject, setNewSubject] = useState("");
   const [feedback, setFeedback] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [showAlert, setShowAlert] = useState(false);
+
+  useEffect(() => {
+    // Fetch subjects only if year, branch, and semester are available
+    if (year && branch && semester) {
+      const fetchSubjects = async () => {
+        try {
+          const myHeaders = new Headers();
+          myHeaders.append("Accept", "*/*");
+          myHeaders.append("User-Agent", "Thunder Client (https://www.thunderclient.com)");
+
+          const requestOptions = {
+            method: "GET",
+            headers: myHeaders,
+            redirect: "follow",
+          };
+
+          const response = await fetch(`https://academic-rating.onrender.com/api/subjects?branch=${branch}&semester=${semester}&year=${year}`, requestOptions);
+          const result = await response.json();
+
+          if (response.ok) {
+            setSubjects(result); // Assuming the result is an array of subjects
+          } else {
+            throw new Error('Failed to fetch subjects');
+          }
+        } catch (error) {
+          console.error("Error fetching subjects:", error);
+          displayAlert("Error fetching subjects, please try again later.", false);
+        }
+      };
+
+      fetchSubjects();
+    }
+  }, [year, branch, semester]);
 
   useEffect(() => {
     const storedSubmissionTime = localStorage.getItem("feedbackSubmissionTime");
@@ -30,12 +62,6 @@ function Main() {
       }
     }
   }, []);
-
-  const addSubject = () => {
-    if (newSubject.trim() === "") return;
-    setSubjects([...subjects, { id: Date.now(), name: newSubject }]);
-    setNewSubject("");
-  };
 
   const onRatingChange = (subjectId, value) => {
     setFeedback((prev) => ({
@@ -105,7 +131,7 @@ function Main() {
       })
       .catch((error) => {
         console.error("Error submitting feedback:", error);
-        displayAlert("The admin has not made the site available yet , Contact admin", false);
+        displayAlert("The admin has not made the site available yet, contact admin", false);
       })
       .finally(() => {
         setIsSubmitting(false);
@@ -124,47 +150,38 @@ function Main() {
         <img src="https://webprosindia.com/vignanit/collegeimages/title_head.jpg" alt="Header" />
       </header>
 
-      <div className="add-section">
-        <h2>Feedback for Subjects</h2>
-        <div className="add-subject">
-          <input
-            type="text"
-            value={newSubject}
-            onChange={(e) => setNewSubject(e.target.value)}
-            placeholder="Enter subject name"
-          />
-          <button onClick={addSubject}>Add</button>
-        </div>
-      </div>
-
       <div className="subject-list">
-        {subjects.map((subject) => (
-          <div key={subject.id} className="feedback-box">
-            <div className="subject-name">{subject.name}</div>
-            <div className="radio-group">
-              {[3, 2, 1].map((value) => (
-                <label key={value}>
-                  <input
-                    type="radio"
-                    name={`rating-${subject.id}`}
-                    value={value}
-                    checked={feedback[subject.id]?.rating === String(value)}
-                    onChange={(e) => onRatingChange(subject.id, e.target.value)}
-                    disabled={hasSubmitted}
-                  />
-                  {value === 3 ? "Excellent" : value === 2 ? "Satisfactory" : "Not upto the mark"}
-                </label>
-              ))}
+        {subjects.length > 0 ? (
+          subjects.map((subject) => (
+            <div key={subject.id} className="feedback-box">
+              <div className="subject-name">{subject.name}</div>
+              <div className="radio-group">
+                {[3, 2, 1].map((value) => (
+                  <label key={value}>
+                    <input
+                      type="radio"
+                      name={`rating-${subject.id}`}
+                      value={value}
+                      checked={feedback[subject.id]?.rating === String(value)}
+                      onChange={(e) => onRatingChange(subject.id, e.target.value)}
+                      disabled={hasSubmitted}
+                    />
+                    {value === 3 ? "Excellent" : value === 2 ? "Satisfactory" : "Not upto the mark"}
+                  </label>
+                ))}
+              </div>
+              <textarea
+                className="suggestion-box"
+                placeholder="Enter your suggestions..."
+                value={feedback[subject.id]?.suggestion || ""}
+                onChange={(e) => onSuggestionChange(subject.id, e.target.value)}
+                disabled={hasSubmitted}
+              />
             </div>
-            <textarea
-              className="suggestion-box"
-              placeholder="Enter your suggestions..."
-              value={feedback[subject.id]?.suggestion || ""}
-              onChange={(e) => onSuggestionChange(subject.id, e.target.value)}
-              disabled={hasSubmitted}
-            />
-          </div>
-        ))}
+          ))
+        ) : (
+          <p>Loading subjects...</p>
+        )}
       </div>
 
       <button className="submit-button" onClick={onSubmitFeedback} disabled={isSubmitting || hasSubmitted}>
