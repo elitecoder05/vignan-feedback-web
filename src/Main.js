@@ -32,7 +32,7 @@ function Main() {
             redirect: "follow",
           };
 
-          const response = await fetch(`https://academic-rating.onrender.com/api/subjects?branch=${branch}&semester=${semester}&year=${year}`, requestOptions);
+          const response = await fetch(`https://academicbackend.duckdns.org/api/subjects?branch=${branch}&semester=${semester}&year=${year}`, requestOptions);
           const result = await response.json();
 
           if (response.ok) {
@@ -116,7 +116,7 @@ function Main() {
       redirect: "follow"
     };
 
-    fetch("https://academic-rating.onrender.com/api/feedback/rating", requestOptions)
+    fetch("https://academicbackend.duckdns.org/api/feedback/rating", requestOptions)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
