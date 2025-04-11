@@ -18,7 +18,6 @@ function Main() {
   const [showAlert, setShowAlert] = useState(false);
 
   useEffect(() => {
-    // Fetch subjects only if year, branch, and semester are available
     if (year && branch && semester) {
       const fetchSubjects = async () => {
         try {
@@ -32,13 +31,18 @@ function Main() {
             redirect: "follow",
           };
 
-          const response = await fetch(`https://academicbackend.duckdns.org/api/subjects?branch=${branch}&semester=${semester}&year=${year}`, requestOptions);
+          const response = await fetch(
+            `https://academicbackend.duckdns.org/api/subjects?branch=${branch}&semester=${semester}&year=${year}`,
+            requestOptions
+          );
+
           const result = await response.json();
 
           if (response.ok) {
-            setSubjects(result); // Assuming the result is an array of subjects
+            console.log("Fetched subjects:", result);
+            setSubjects(result);
           } else {
-            throw new Error('Failed to fetch subjects');
+            throw new Error("Failed to fetch subjects");
           }
         } catch (error) {
           console.error("Error fetching subjects:", error);
@@ -64,17 +68,25 @@ function Main() {
   }, []);
 
   const onRatingChange = (subjectId, value) => {
-    setFeedback((prev) => ({
-      ...prev,
-      [subjectId]: { ...prev[subjectId], rating: value },
-    }));
+    setFeedback((prev) => {
+      const updated = {
+        ...prev,
+        [subjectId]: { ...prev[subjectId], rating: value },
+      };
+      console.log("Updated feedback (on rating change):", updated);
+      return updated;
+    });
   };
 
   const onSuggestionChange = (subjectId, value) => {
-    setFeedback((prev) => ({
-      ...prev,
-      [subjectId]: { ...prev[subjectId], suggestion: value },
-    }));
+    setFeedback((prev) => {
+      const updated = {
+        ...prev,
+        [subjectId]: { ...prev[subjectId], suggestion: value },
+      };
+      console.log("Updated feedback (on suggestion change):", updated);
+      return updated;
+    });
   };
 
   const displayAlert = (message, isSuccess = true) => {
@@ -89,13 +101,16 @@ function Main() {
     setIsSubmitting(true);
 
     const ratings = subjects.map((subject) => {
-      const fb = feedback[subject.id] || {};
+      const subjectId = subject._id;
+      const fb = feedback[subjectId] || {};
       return {
         subjectName: subject.name,
         rating: fb.rating ? Number(fb.rating) : null,
         message: fb.suggestion || "",
       };
     });
+
+    console.log("Final feedback payload before submission:", ratings);
 
     const data = {
       branch,
@@ -113,7 +128,7 @@ function Main() {
       method: "POST",
       headers: myHeaders,
       body: JSON.stringify(data),
-      redirect: "follow"
+      redirect: "follow",
     };
 
     fetch("https://academicbackend.duckdns.org/api/feedback/rating", requestOptions)
@@ -152,33 +167,36 @@ function Main() {
 
       <div className="subject-list">
         {subjects.length > 0 ? (
-          subjects.map((subject) => (
-            <div key={subject.id} className="feedback-box">
-              <div className="subject-name">{subject.name}</div>
-              <div className="radio-group">
-                {[3, 2, 1].map((value) => (
-                  <label key={value}>
-                    <input
-                      type="radio"
-                      name={`rating-${subject.id}`}
-                      value={value}
-                      checked={feedback[subject.id]?.rating === String(value)}
-                      onChange={(e) => onRatingChange(subject.id, e.target.value)}
-                      disabled={hasSubmitted}
-                    />
-                    {value === 3 ? "Excellent" : value === 2 ? "Satisfactory" : "Not upto the mark"}
-                  </label>
-                ))}
+          subjects.map((subject) => {
+            const subjectId = subject._id;
+            return (
+              <div key={subjectId} className="feedback-box">
+                <div className="subject-name">{subject.name}</div>
+                <div className="radio-group">
+                  {[3, 2, 1].map((value) => (
+                    <label key={value}>
+                      <input
+                        type="radio"
+                        name={`rating-${subjectId}`}
+                        value={value}
+                        checked={feedback[subjectId]?.rating === String(value)}
+                        onChange={(e) => onRatingChange(subjectId, e.target.value)}
+                        disabled={hasSubmitted}
+                      />
+                      {value === 3 ? "Excellent" : value === 2 ? "Satisfactory" : "Not upto the mark"}
+                    </label>
+                  ))}
+                </div>
+                <textarea
+                  className="suggestion-box"
+                  placeholder="Enter your suggestions..."
+                  value={feedback[subjectId]?.suggestion || ""}
+                  onChange={(e) => onSuggestionChange(subjectId, e.target.value)}
+                  disabled={hasSubmitted}
+                />
               </div>
-              <textarea
-                className="suggestion-box"
-                placeholder="Enter your suggestions..."
-                value={feedback[subject.id]?.suggestion || ""}
-                onChange={(e) => onSuggestionChange(subject.id, e.target.value)}
-                disabled={hasSubmitted}
-              />
-            </div>
-          ))
+            );
+          })
         ) : (
           <p>Loading subjects...</p>
         )}
