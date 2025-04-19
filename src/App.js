@@ -120,6 +120,15 @@ function Home() {
             <option value="ECE">ECE</option>
             <option value="MECH">MECH</option>
             <option value="CIVIL">CIVIL</option>
+            <option value="CIVIL">AI</option>
+            <option value="CIVIL">CS</option>
+            <option value="CIVIL">DS</option>
+            <option value="CIVIL">AIDS</option>
+            <option value="CIVIL">IT</option>
+            <option value="CIVIL">ECM</option>
+            <option value="CIVIL">EEE</option>
+
+
           </select>
         </div>
 
