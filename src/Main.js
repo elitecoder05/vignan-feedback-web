@@ -146,7 +146,7 @@ function Main() {
       })
       .catch((error) => {
         console.error("Error submitting feedback:", error);
-        displayAlert("The admin has not made the site available yet, contact admin", false);
+        displayAlert("YOU HAVE TO FILL THE SUGGESTIONS ALSO , WE ARE NOT STORING YOUR DATA ANYWHERE", false);
       })
       .finally(() => {
         setIsSubmitting(false);
